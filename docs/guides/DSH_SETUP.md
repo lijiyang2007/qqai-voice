@@ -7,19 +7,46 @@
 
 ## 安装步骤
 
-在目标设备上：
+> **给 AI 执行者**：**不要一上来就 clone。** 先做下面的「第 0 步：本机预检」；如果本机已经配置好，
+> 直接跳过后面的第 1~5 步，只回报"已就绪"即可。只有预检发现缺项时，才从缺失的那一步开始补，
+> 不必从头重来。
 
-1. **克隆/获取仓库**：
+### 第 0 步：本机预检（先做）
+
+在目标设备上依次检查这四项，并记录结果：
+
+1. **仓库是否已在本地**：找一下本机有没有本项目目录（`config.example.json` 存在、`git remote -v`
+   的 origin 指向 `qqai-voice`）。**已经有就直接用它，不要重新 clone。**
+2. **依赖是否已装**：目录里有 `node_modules/` 就跳过第 1 步的 `npm install`。
+3. **配置是否已填**：`config.json` 是否存在且关键项已填（不是空模板）——`ownerQQ`、
+   `allow.private` / `allow.groups`、`snowluma.*`；语音档还要看
+   `socialV2.voice.enabled`、`tools.sendVoice`、`tts.breeze.voiceId`，
+   以及 Key（`state/secrets/breeze.json` 或环境变量 `BREEZE_API_KEY`）。
+   **已填就不要覆盖**（千万别用 `config.example.json` 重新 copy 盖掉用户的真实配置）。
+4. **DSH 端是否已装好**（profile 默认 `web`）：
+   ```bash
+   npm run verify:adaptation     # 含运行中的 DSH 0.2.x 实测，全绿才算数
+   npm run verify:persona
+   ```
+   再确认 `~/.dsh/profiles/<profile>/cordis.patch.yml` 含 `mcp-snowluma` 等三个 MCP 条目、
+   profile 的 `package.json` 的 `dsh.profile.bundles` 含 `qq-agent-presets`、
+   preset 列表里有 `qq-chat` / `qq-chat-v2`（`npm run probe:protocol`）。
+
+**判定规则**：四项全部满足 = **已配置好 → 结束，跳过下面的第 1~5 步**；缺少哪项就从哪项开始补。
+
+### 第 1~5 步：安装（仅补预检发现的缺项）
+
+1. **获取仓库**（仅当第 0 步发现本机没有时）：
 
    ```bash
-   git clone https://github.com/lijiyang2007/dsh-qq-starter.git
-   cd dsh-qq-starter
+   git clone https://github.com/lijiyang2007/qqai-voice.git
+   cd qqai-voice
    ```
 
    > 默认分支 `main` 即当前版本 **v0.2.1-r1**（适配 **DSH 0.2.x**），clone 下来无需切换分支。
    > 本仓库派生自 `Derpyu520/qq-bridge` 的 `v0.2.1-r1` 快照，详见 [NOTICE.md](../../NOTICE.md)。
 
-2. **安装依赖**：
+2. **安装依赖**（第 0 步已装则跳过）：
 
    ```bash
    npm install
@@ -42,6 +69,9 @@
    - `dsh.authToken`（新版 DSH 的 launch token，用于换取 Cookie；默认留空，桥接会自动从 DSH guard 日志发现，DSH 重启后也会自动重新发现）
    - `ownerQQ`
    - `allow.private` / `allow.groups`
+   - 语音（本仓库默认强制 BreezeBlue）：`socialV2.voice.tts.breeze.voiceId`（自己生成的 `voc_...`），
+     Key 写进 `state/secrets/breeze.json` 或环境变量 `BREEZE_API_KEY`（**不要写进 config.json**）。
+     详见 [BREEZE_TTS.md](BREEZE_TTS.md)。
 
 4. **运行 DSH 端安装脚本**：
 

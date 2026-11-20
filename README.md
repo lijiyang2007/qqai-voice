@@ -72,6 +72,10 @@ QQ 账号 ──> SnowLuma ──> 【本仓库】 ──> DeepSeek Harness
 
 ## 四、快速开始
 
+> **给 AI 执行者**：动手前先按 [DSH_SETUP.md 第 0 步](docs/guides/DSH_SETUP.md) 做本机预检——
+> 检查仓库是否已在本地、依赖是否装好、`config.json` 是否已填、DSH 端是否已配好。
+> **全部就绪就直接跳过安装，只回报"已就绪"，不要重新 clone、不要覆盖已有配置。**
+
 ```bash
 npm install          # postinstall 会自动修补 @snowluma/sdk 的 ESM 打包问题
 copy config.example.json config.json     # Windows CMD
