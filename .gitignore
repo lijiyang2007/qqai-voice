@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+.npm-cache/
+
+# 本地二进制（ffmpeg 等 60MB+，每台机器自己装，见 docs/guides/MEDIA_PIPELINE.md）
+tools/
+.ffmpeg-dl/
+
+# ── 运行时数据与本地配置（永不发布）────────────────────────────────
+state/
+config.json
+*.log
+*.bak
+*.bak-*
+*.tmp
+
+# ── 语音库（用户个人音频素材，config.json 的 socialV2.voice.dir 指向此处）
+audio/
+
+# ── 不得再分发的上游内容 ─────────────────────────────────────────
+# @snowluma/mcp 的 catalog 快照属再分发其内容，不得提交（见 NOTICE.md §3）
+/_snowluma-catalog.json
+
+# ── 一次性 / 本机专用脚本（机器相关路径或 ID）──────────────────────
+/scripts/cleanup-probe-sessions.mjs
+/scripts/cleanup-probe-workspaces.mjs
+/scripts/cleanup-test-sessions.mjs
+/scripts/debug-whitelist.mjs
+/scripts/diag-archive.mjs
+/scripts/fix-probe-workspace-title.mjs
+/scripts/patch-qq-chat-v2-collect-memory.mjs
+/scripts/patch-qq-chat-v2-presleep.mjs
+/scripts/patch-qq-chat-v2-stickers.mjs
+/scripts/patch-web-mcp-timeout.mjs
+
+# 本机专用的隐私扫描规则（含真实 QQ 号 / 路径，不入库）
+/scripts/privacy-rules.json
+
+# ── 上游的规划 / 调研 / 审计 / 归档文档（本仓库不收录）──────────────
+docs/audits/
+docs/design/
+docs/legacy/
+docs/research/
+docs/qq-bridge-PUBLISH_PLAN.md
+docs/qq-bridge-SECURITY_AUDIT.md
+docs/guides/PROJECT_GUIDE.md
+
+# 注意：语音文档（VOICE.md / BREEZE_TTS.md）为本仓库正式内容，需发布，不忽略。
+# 真实密钥模板只在 scripts/breeze.example.json，真实值在 state/secrets/（已被上面 state/ 忽略）。
