@@ -156,6 +156,8 @@ console.log('## qq-bridge 语音系统：MCP 工具与开关映射');
   // qqai-voice 是语音增强版：随仓库发布的示例默认**开启**语音（代码出厂默认仍关，由示例覆盖）。
   ok(ex.socialV2?.tools?.sendVoice === true, 'config.example.json: tools.sendVoice=true（语音版默认开）');
   ok(ex.socialV2?.voice?.enabled === true, 'config.example.json: voice.enabled=true（语音版默认开）');
+  ok(ex.socialV2?.voice?.tts?.provider === 'breeze', 'config.example.json: provider=breeze（默认强制 BreezeBlue）');
+  ok(ex.socialV2?.voice?.tts?.breeze?.voiceId === '', 'config.example.json: breeze.voiceId 留空（不写入任何音色 ID）');
   try {
     const local = JSON.parse(read('config.json').replace(/^\uFEFF/, ''));
     console.log(`  ℹ  你本机的值（仅供参考，不参与判定）：tools.sendVoice=${local.socialV2?.tools?.sendVoice} / voice.enabled=${local.socialV2?.voice?.enabled}`);
@@ -184,7 +186,7 @@ console.log('## 文档');
   // qqai-voice 是语音增强版：默认开启语音；独立图形/命令行工具（voice-gui.mjs /
   // voice-cli.mjs）属本机工具，按发布方案不包含在本仓库里。这里校验实际发布的语音文档。
   const voice = read(path.join('docs', 'guides', 'VOICE.md'));
-  for (const needle of ['qq_send_voice', 'breeze-first', 'ffmpeg']) {
+  for (const needle of ['qq_send_voice', 'breeze', 'ffmpeg']) {
     ok(voice.includes(needle), 'docs/guides/VOICE.md 提到「' + needle + '」');
   }
   const readme = read('README.md');

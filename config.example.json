@@ -239,7 +239,7 @@
       "autoReadback": true,
       "tts": {
         "enabled": true,
-        "provider": "breeze-first",
+        "provider": "breeze",
         "voice": "zh-CN-XiaoyiNeural",
         "sapiVoice": "",
         "rate": 0,

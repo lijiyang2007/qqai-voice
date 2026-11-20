@@ -1,18 +1,19 @@
 # BreezeBlue 个性音色（BREEZE_TTS）
 
-给桥接接一套云端 TTS：让 AI 用自己设计的声音说话，而不是只用Edge朗读腔。
-**默认不启用到音色**——需要你自己填一个 Voice ID 和 Key 才会真的走云端。
+给桥接接一套云端 TTS：让 AI 用自己设计的声音说话，而不是只用 Edge 朗读腔。
+本仓库的语音**默认就走 BreezeBlue 云端**（`provider: "breeze"`），但 BreezeBlue 不是本仓库的一部分：
+**需要你自己的账号、一个 Voice ID 和 API Key 才会出声**，该档位不回退到其它引擎。
 
-> 本仓库默认 `provider: "breeze-first"`：没配音色/Key 时**自动回退**到 Edge → SAPI，
-> 所以不填任何东西也能发声；填了才升级成个性音色。
+> ⚠️ **先准备 BreezeBlue**：[官网](https://breezeblue.ai/zh/voice-design) 注册 → 生成并保存音色拿到 `voc_...`
+> Voice ID → 开发者控制台拿 API Key。两项都填好 AI 才能发出 BreezeBlue 声音；没配好不会出声。
 
 ## 现状
 
 | 项 | 状态 |
 | --- | --- |
 | 代码 | 已接好（`src/tts-breeze.js` + `tts-core.js` 的 provider 链） |
-| 配置 | `provider: "breeze-first"`，`voiceId` 为空 |
-| 密钥 | **未配置** → 现在走 Edge 晓伊 |
+| 配置 | `provider: "breeze"`（默认强制云端），`voiceId` 留空待你填 |
+| 密钥 | **未配置** → 默认档位下不出声（想免密钥出声请切 `provider: "auto"`） |
 | 自检 | 离线 17/17 通过（`node scripts/tts-breeze-selftest.mjs`） |
 
 ## 两步启用个性音色
@@ -60,11 +61,11 @@ node scripts/tts-breeze-selftest.mjs --live   # 2) 花钱（约几 credits）：
 
 | 字段 | 默认 | 说明 |
 | --- | --- | --- |
-| `voiceId` | 空 | **必须填**，否则云端静默剔除、按 Edge 走 |
+| `voiceId` | 空 | **必须填**，否则默认档位不出声 |
 | `baseUrl` | `https://api.breeze.blue` | 云端地址 |
 | `outputFormat` | `mp3` | 输出格式 |
 | `speed` | `1` | 0.5~2.0，只影响云端 |
-| `timeoutMs` | `15000` | 超时即回退 |
+| `timeoutMs` | `15000` | 超时报错（默认档位不回退；改 `breeze-first` 才回退） |
 
 `socialV2.voice.autoSpeak`（概率性主动开口）：
 
@@ -79,14 +80,15 @@ node scripts/tts-breeze-selftest.mjs --live   # 2) 花钱（约几 credits）：
 
 按 5% × 每天约 100 条文字回复估算约 5 条/天，被 `maxPerDay: 6` 兜住。
 
-## 回退（三条命令级操作）
+## 不用 BreezeBlue 时怎么切（默认档位不回退）
 
 ```jsonc
-// A. 只回退到 Edge，保留云端代码：provider 改成 "auto"，重启
-// B. 关掉概率性开口，保留"我让它说才说"：autoSpeak.enabled 改成 false，重启
-// C. 完全摘掉：删 src/tts-breeze.js 不行（tts-core 里 import 了），
-//    改成 provider:"auto" 即可，breeze 段留着也不会被调用
+// A. 想免密钥用 Edge 朗读：provider 改成 "auto"，重启（breeze 段留着也不会被调用）
+// B. 想云端优先、失败再退 Edge→SAPI：provider 改成 "breeze-first"，重启
+// C. 关掉概率性开口，保留"我让它说才说"：autoSpeak.enabled 改成 false，重启
 ```
+
+> 删 `src/tts-breeze.js` 不行（`tts-core` 里 import 了）；靠 `provider` 切换即可。
 
 ## 安全边界
 

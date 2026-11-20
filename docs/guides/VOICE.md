@@ -4,9 +4,10 @@
 音频文件。核心源码在 `src/voice-core.js`、`src/tts-core.js`、`src/tts-breeze.js`、
 `src/send-voice-lib.js`、`src/voice-delivery-receipts.js`。
 
-> 与上游整理版不同，本仓库**默认开启语音**（`voice.enabled=true`、`tools.sendVoice=true`），
-> 并默认使用 `breeze-first` 个性音色档。没配音色 ID / Key 时会自动回退到 Edge → SAPI，
-> 所以**什么都不填也能发声**。个性化音色与密钥见 [BREEZE_TTS.md](BREEZE_TTS.md)。
+> 与上游整理版不同，本仓库**默认开启语音**（`voice.enabled=true`、`tools.sendVoice=true`）
+> 并默认使用 **BreezeBlue 云端音色**（`provider: "breeze"`）。
+> ⚠️ 这不等于开箱即用：你必须自己准备 BreezeBlue 账号、音色 ID 与 API Key（见 [BREEZE_TTS.md](BREEZE_TTS.md)），
+> 该档位**不回退**到 Edge/SAPI，没配好就不会出声。
 
 ---
 
@@ -61,17 +62,17 @@ AI 工具是否可用由两处开关同时决定（都在 `config.json` 的 `soc
 | 键 | 值 | 说明 |
 | --- | --- | --- |
 | `enabled` | `true` | 是否允许现场合成 |
-| `provider` | `breeze-first` | 先云端个性音色，失败回退 Edge → SAPI |
-| `voice` | `zh-CN-XiaoyiNeural` | 回退用的 Edge 音色 |
+| `provider` | `breeze` | **只走 BreezeBlue 云端**，不回退到其它引擎 |
+| `voice` | `zh-CN-XiaoyiNeural` | 仅当你手动切到 `edge` 档时才用到的 Edge 音色 |
 | `maxChars` | `200` | 单条语音字数上限 |
-| `breeze.voiceId` | `""` | 个性音色 ID，留空则云端静默剔除 |
+| `breeze.voiceId` | `""` | **必须自己填** BreezeBlue 音色 ID，留空则不出声 |
 | `autoSpeak.enabled` | `true` | AI 发完文字后按概率补一条语音 |
 
-**provider 可选值**：`auto`（默认，Edge→SAPI，免密钥）/ `edge` / `sapi`（纯本地离线）
-/ `breeze`（只走云端）/ `breeze-first`（云端优先，带三级回退）。
+**provider 可选值**：`breeze`（本仓库默认，只走云端）/ `breeze-first`（云端优先、失败回退 Edge→SAPI）
+/ `auto`（Edge→SAPI，免密钥）/ `edge` / `sapi`（纯本地离线）。
 
-不想花钱、也不想填任何密钥：把 `provider` 改成 `auto` 即可，开箱即用。
-想要个性音色：见 [BREEZE_TTS.md](BREEZE_TTS.md)。
+本仓库默认档位 **不回退**：没填 `voiceId` / Key 就不会出声。若你不想用 BreezeBlue，把 `provider`
+改成 `auto` 即可免密钥用 Edge 朗读。启用默认音色见 [BREEZE_TTS.md](BREEZE_TTS.md)。
 
 ## 5. ffmpeg（可选但推荐）
 

@@ -4,8 +4,12 @@
 并且可以合成语音、用自己的音色开口**。不破解协议、不碰 QQ 客户端，只走公开的 OneBot v11 接口。
 
 > 这是公开整理版 `dsh-qq-starter` 的**语音增强版**：默认开启语音子系统（`voice.enabled=true`、
-> `tools.sendVoice=true`）并采用 `breeze-first` 个性音色档，不填任何密钥也能用 Edge 朗读发声，
-> 填了音色 ID + Key 就升级成自己的声音。见 [语音文档](docs/guides/VOICE.md)。
+> `tools.sendVoice=true`），并默认使用 **BreezeBlue 云端音色**（`provider: "breeze"`）。
+
+> ⚠️ **使用语音前必须准备 BreezeBlue**：本仓库的语音默认走 [BreezeBlue](https://breezeblue.ai/zh/voice-design)
+> 云端合成，它**不是本仓库的一部分、也不提供免费额度**。你需要自己注册账号、在语音设计页生成并保存一个音色
+> （拿到 `voc_...` 的 Voice ID），并从开发者控制台拿到 API Key。两项都填好后 AI 才能发出 BreezeBlue 声音；
+> 该档位**不回退**到其它引擎，没配好就不会出声。配置方法见 [BREEZE_TTS.md](docs/guides/BREEZE_TTS.md)。
 
 > 本项目的人设卡（`roles/`）默认是**空模板**，需要你自己填。见 [roles/README.md](roles/README.md)。
 
@@ -78,7 +82,8 @@ copy config.example.json config.json     # Windows CMD
 1. **起 SnowLuma**，扫码登录你的 QQ 账号，确认 OneBot WS 在 `127.0.0.1:3001`、HTTP 在 `3000`。
 2. **起 DSH**（桌面端每次启动端口随机，桥接会自动探测并同步）。
 3. **改 `config.json`**：至少填 `ownerQQ`、`allow.private` / `allow.groups`（白名单）。
-   语音默认已开（`breeze-first` + Edge 回退），无需额外配置即可发声；想要个性音色见下方语音文档。
+   ⚠️ 语音默认走 **BreezeBlue**（`provider: "breeze"`），要发声必须填 `socialV2.voice.tts.breeze.voiceId`
+   和 API Key（见上方提醒与 [BREEZE_TTS.md](docs/guides/BREEZE_TTS.md)）；没配好不会出声。
 4. **起桥接**：双击 `start.bat`（会自动同步 DSH 端口、收紧 `state/` 权限、挂了自动重启）。
 5. 打开控制台 <http://127.0.0.1:3100>，令牌在启动日志里。
 
@@ -89,8 +94,8 @@ copy config.example.json config.json     # Windows CMD
 
 - [docs/guides/SNOWLUMA.md](docs/guides/SNOWLUMA.md) —— **SnowLuma**：获取边界、发行包 SHA256 校验、两个 token 不是同一个
 - [docs/guides/DSH_SETUP.md](docs/guides/DSH_SETUP.md) —— DSH 端：preset 与 MCP 怎么挂
-- [docs/guides/VOICE.md](docs/guides/VOICE.md) —— **语音发送全解**：三种发送方式、配置解析顺序、TTS 三档、验证与安全边界
-- [docs/guides/BREEZE_TTS.md](docs/guides/BREEZE_TTS.md) —— **个性音色**：拿 Voice ID、填 Key（只走本地/环境变量）、回退与自检
+- [docs/guides/VOICE.md](docs/guides/VOICE.md) —— **语音发送全解**：三种发送方式、配置解析顺序、TTS 档位、验证与安全边界
+- [docs/guides/BREEZE_TTS.md](docs/guides/BREEZE_TTS.md) —— **BreezeBlue 音色（默认）**：拿 Voice ID、填 Key（只走本地/环境变量）、自检
 - [docs/guides/SECURITY_BASELINE.md](docs/guides/SECURITY_BASELINE.md) —— 改安全相关代码前必读
 - [docs/guides/PRIVACY.md](docs/guides/PRIVACY.md) —— 数据往哪出、怎么关
 - [docs/guides/MEDIA_PIPELINE.md](docs/guides/MEDIA_PIPELINE.md) —— ffmpeg 等本地二进制的处理
